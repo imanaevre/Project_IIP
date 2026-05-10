@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def check_empty(func):
     def wrapper(df, *args, **kwargs):
@@ -80,6 +81,31 @@ def target(df, tg):
     df_target = df[df['steps'] >= tg]
     percent = len(df_target) / len(df) * 100
     return f'Цель в {tg} шагов была выполнена в {percent:.2f}% дней'
+
+@check_empty
+@show_analysis_name('Анализ выполнения цели')
+def target_done_generator(df, tg=10000):
+    for _, row in df.iterrows():
+        if row['steps'] >= tg:
+            yield row
+
+@check_empty
+@show_analysis_name('Анализ серии дней')
+def streak_generator(df, goal=10000):
+    streak = 0
+    for _, row in df.iterrows():
+        if row['steps'] >= goal:
+            streak += 1
+        else:
+            if streak > 0:
+                yield streak
+            streak = 0
+    if streak > 0:
+        yield streak
+
+
+
+
 
 
 
