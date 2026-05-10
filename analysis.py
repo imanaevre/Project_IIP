@@ -1,37 +1,68 @@
 import pandas as pd
 
+def check_empty(func):
+    def wrapper(df, *args, **kwargs):
+        if df.empty:
+            print('DataFrame пуст')
+            return
+        return func(df, *args, **kwargs)
+    return wrapper
+
+def show_analysis_name(name):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            print('\n' + '=' * 40)
+            print(f'АНАЛИЗ: {name}')
+            print('=' * 40)
+            result = func(*args, **kwargs)
+            return result
+        return wrapper
+    return decorator
+
 df = pd.read_csv('daily_steps.csv')
 
-def record_date(top, df):
+@check_empty
+@show_analysis_name('Анализ рекордных дат')
+def record_date(df, top=5):
     return df.nlargest(top, 'steps')
 
-def antirecord_date(top, df):
+@check_empty
+@show_analysis_name('Анализ анти-рекордных дат')
+def antirecord_date(df, top=5):
     return df.nsmallest(top, 'steps')
 
+@check_empty
+@show_analysis_name('Анализ среднего значения')
 def mean_steps(df):
     return df['steps'].mean().astype(int)
 
-
+@check_empty
+@show_analysis_name('Анализ дней недели')
 def an_days_of_week(df):
     df['date'] = pd.to_datetime(df['date'])
     df['days'] = df['date'].dt.dayofweek
     d_of_week = df.groupby('days')['steps'].mean().astype(int)
     return max(d_of_week), min(d_of_week), d_of_week
 
+@check_empty
+@show_analysis_name('Анализ месяцев')
 def an_month(df):
     df['date'] = pd.to_datetime(df['date'])
     df['month'] = df['date'].dt.month
     month_of_year = df.groupby('month')['steps'].mean().astype(int)
     return max(month_of_year), min(month_of_year), month_of_year
 
-
+@check_empty
+@show_analysis_name('Анализ годов')
 def an_year(df):
     df['year'] = pd.to_datetime(df['date'])
     df['year'] = df['year'].dt.year
     years = df.groupby('year')['steps'].mean().astype(int)
     return max(years), min(years), years
 
-def trend_activity(df, year):
+@check_empty
+@show_analysis_name('Анализ тренда активности')
+def trend_activity(df, year=2025):
     df['year'] = pd.to_datetime(df['date'])
     df = df[df['year'].dt.year == year]
     first_steps = df['steps'].head(30).sum()
@@ -43,6 +74,8 @@ def trend_activity(df, year):
     else:
         return 'К концу года ваша активность возросла!'
 
+@check_empty
+@show_analysis_name('Анализ выполнения цели')
 def target(df, tg):
     df_target = df[df['steps'] >= tg]
     percent = len(df_target) / len(df) * 100
