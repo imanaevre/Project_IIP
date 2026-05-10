@@ -43,6 +43,11 @@ def trend_activity(df, year):
     else:
         return 'К концу года ваша активность возросла!'
 
+def target(df, tg):
+    df_target = df[df['steps'] >= tg]
+    percent = len(df_target) / len(df) * 100
+    return f'Цель в {tg} шагов была выполнена в {percent:.2f}% дней'
+
 
 
 
