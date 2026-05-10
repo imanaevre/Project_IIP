@@ -18,5 +18,33 @@ def an_days_of_week(df):
     d_of_week = df.groupby('days')['steps'].mean().astype(int)
     return max(d_of_week), min(d_of_week), d_of_week
 
-print(mean_steps(df))
+def an_month(df):
+    df['date'] = pd.to_datetime(df['date'])
+    df['month'] = df['date'].dt.month
+    month_of_year = df.groupby('month')['steps'].mean().astype(int)
+    return max(month_of_year), min(month_of_year), month_of_year
+
+
+def an_year(df):
+    df['year'] = pd.to_datetime(df['date'])
+    df['year'] = df['year'].dt.year
+    years = df.groupby('year')['steps'].mean().astype(int)
+    return max(years), min(years), years
+
+def trend_activity(df, year):
+    df['year'] = pd.to_datetime(df['date'])
+    df = df[df['year'].dt.year == year]
+    first_steps = df['steps'].head(30).sum()
+    last_steps = df['steps'].tail(30).sum()
+    if first_steps > last_steps:
+        return 'К концу года ваша активность немного снизилась!'
+    elif first_steps == last_steps:
+        return 'Ваша активность осталась стабильной!'
+    else:
+        return 'К концу года ваша активность возросла!'
+
+
+
+
+
 
