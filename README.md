@@ -29,8 +29,7 @@ project/
 ├── main.py
 ├── daily_steps.csv
 ├── data.xml
-├── tests/
-│   └── test_analysis.py
+├── tests.py
 └── README.md
 ```
 
