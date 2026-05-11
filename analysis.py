@@ -103,7 +103,16 @@ def streak_generator(df, goal=10000):
     if streak > 0:
         yield streak
 
+@check_empty
+@show_analysis_name('Анализ NumPy')
+def numpy_analysis(df):
+    steps = df['steps'].values
 
+    median = np.median(steps)
+    std = np.std(steps)
+    percentile = np.percentile(steps, 90)
+
+    return int(median), round(float(std), 2), int(percentile)
 
 
 

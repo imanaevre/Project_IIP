@@ -27,4 +27,3 @@ daily_steps = df.groupby("date", as_index=False)["steps"].sum()
 
 daily_steps.to_csv("daily_steps.csv", index=False)
 
-print(daily_steps)
